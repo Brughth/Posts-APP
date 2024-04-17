@@ -1,25 +1,31 @@
 import 'package:demo2/posts/data/repositories/post_repository.dart';
-import 'package:demo2/posts/presentation/pages/comment_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../data/models/post_model.dart';
+import '../../data/models/comment_model.dart';
 
-class PostScreen extends StatefulWidget {
-  const PostScreen({super.key});
+class CommentScreen extends StatefulWidget {
+  const CommentScreen({
+    super.key,
+    required this.postId,
+  });
+  final int postId;
 
   @override
-  State<PostScreen> createState() => _PostScreenState();
+  State<CommentScreen> createState() => _CommentScreenState();
 }
 
-class _PostScreenState extends State<PostScreen> {
-  late PostRepository postRepository;
-  late Future<List<PostModel>?> _futurePosts;
+class _CommentScreenState extends State<CommentScreen> {
+  late PostRepository repository;
+  late Future<List<CommentModel>> _futureComments;
 
   @override
   void initState() {
-    postRepository = PostRepository();
-    _futurePosts = postRepository.getPosts();
+    repository = PostRepository();
+
+    _futureComments = repository.getPostComments(
+      postId: widget.postId,
+    );
     super.initState();
   }
 
@@ -27,17 +33,17 @@ class _PostScreenState extends State<PostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Posts"),
+        title: const Text("Comments"),
       ),
-      body: FutureBuilder<List<PostModel>?>(
-        future: _futurePosts,
+      body: FutureBuilder<List<CommentModel>>(
+        future: _futureComments,
         builder: (
           BuildContext context,
-          AsyncSnapshot<List<PostModel>?> snapshot,
+          AsyncSnapshot<List<CommentModel>> snapshot,
         ) {
           switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
             case ConnectionState.active:
+            case ConnectionState.waiting:
               return const Center(
                 child: CupertinoActivityIndicator(
                   radius: 50,
@@ -61,34 +67,24 @@ class _PostScreenState extends State<PostScreen> {
                 ],
               );
             case ConnectionState.done:
-              var posts = snapshot.data;
-              if (posts?.isEmpty ?? true) {
+              var comments = snapshot.data;
+              if (comments?.isEmpty ?? true) {
                 return const Center(
-                  child: Text("Aucun post pour le moment"),
+                  child: Text("Aucun commentaire pour le moment"),
                 );
               }
               return ListView.separated(
+                itemCount: comments!.length,
+                separatorBuilder: (context, index) {
+                  return Divider();
+                },
                 itemBuilder: (context, index) {
-                  var post = posts[index];
+                  var comment = comments[index];
                   return ListTile(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => CommentScreen(
-                            postId: post.id,
-                          ),
-                        ),
-                      );
-                    },
-                    title: Text(post.title),
-                    subtitle: Text(post.body),
-                    trailing: const Icon(Icons.arrow_forward_ios),
+                    title: Text(comment.email),
+                    subtitle: Text(comment.body),
                   );
                 },
-                separatorBuilder: (context, index) {
-                  return const Divider();
-                },
-                itemCount: posts!.length,
               );
             default:
               return Container();

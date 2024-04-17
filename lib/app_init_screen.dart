@@ -1,5 +1,5 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:demo2/auth/presentation/pages/login_screen.dart';
+import 'package:demo2/auth/presentation/pages/register_screen.dart';
 import 'package:demo2/posts/presentation/pages/post_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +18,7 @@ class _AppInitScreenState extends State<AppInitScreen> {
       () {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) {
-            return const PostScreen();
+            return const RegisterScreen();
           }),
           (route) => false,
         );
