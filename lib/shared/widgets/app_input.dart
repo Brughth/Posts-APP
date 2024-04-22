@@ -4,12 +4,16 @@ class AppInput extends StatelessWidget {
   final String? label;
   final String? hint;
   final TextEditingController? controller;
+  final String? Function(String?)? validator;
+  final List<String>? autofillHints;
 
   AppInput({
     super.key,
     this.label,
     this.controller,
     this.hint,
+    this.validator,
+    this.autofillHints,
   });
 
   @override
@@ -27,6 +31,8 @@ class AppInput extends StatelessWidget {
         TextFormField(
           cursorColor: Colors.green,
           controller: controller,
+          validator: validator,
+          autofillHints: autofillHints,
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: const TextStyle(
