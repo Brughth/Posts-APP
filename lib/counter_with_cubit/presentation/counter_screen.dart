@@ -12,7 +12,16 @@ class CounterScreen extends StatelessWidget {
         title: const Text("Counter App With Cubit"),
       ),
       body: Center(
-        child: BlocBuilder<CounterCubit, CounterState>(
+        child: BlocConsumer<CounterCubit, CounterState>(
+          listener: (context, state) {
+            if (state.counter == 10) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("Bravo!! le compter est: ${state.counter}"),
+                ),
+              );
+            }
+          },
           builder: (context, state) {
             return Text(
               state.counter.toString(),

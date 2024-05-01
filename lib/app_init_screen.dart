@@ -17,7 +17,7 @@ class _AppInitScreenState extends State<AppInitScreen> {
       () {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) {
-            return const ApplicationScree();
+            return ApplicationScree();
           }),
           (route) => false,
         );
